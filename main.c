@@ -8,6 +8,8 @@
 void cityMenu(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount);
 void addCity(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount);
 void listCities(char cities[MAX_CITIES][NAME_LENGTH], int cityCount);
+void removeCity(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount);
+void renameCity(char cities[MAX_CITIES][NAME_LENGTH], int cityCount);
 
 int main()
 {
@@ -67,7 +69,8 @@ void cityMenu(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount)
         printf("\n=== City Management ===\n");
         printf("1) Add City\n");
         printf("2) List Cities\n");
-        printf("3) Back to Main Menu\n");
+        printf("3) Remove City\n");
+        printf("4) Rename City\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
         getchar();
@@ -78,9 +81,15 @@ void cityMenu(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount)
             addCity(cities, cityCount);
             break;
         case 2:
-            listCities(cities, *cityCount);
+            listCities(cities,*cityCount);
             break;
         case 3:
+            removeCity(cities,cityCount);
+            break;
+        case 4:
+            renameCity(cities,*cityCount);
+            break;
+        case 5:
             break;
         default:
             printf("Invalid..Please Try again.\n");
@@ -120,4 +129,63 @@ void listCities(char cities[MAX_CITIES][NAME_LENGTH], int cityCount)
     {
         printf("%d. %s\n", i + 1, cities[i]);
     }
+}
+void removeCity(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount)
+{
+    if (*cityCount == 0)
+    {
+        printf("No cities to remove.\n");
+        return;
+    }
+
+    listCities(cities, *cityCount);
+
+    int index;
+    printf("Enter the number of the city to remove: ");
+    scanf("%d", &index);
+    getchar();
+
+    if (index < 1 || index > *cityCount)
+    {
+        printf("Invalid city number.\n");
+        return;
+    }
+
+    for (int i = index - 1; i < *cityCount - 1; i++)
+    {
+        strcpy(cities[i], cities[i + 1]);
+    }
+
+    (*cityCount)--;
+
+    printf("City removed successfully!\n");
+
+}
+
+void renameCity(char cities[MAX_CITIES][NAME_LENGTH], int cityCount)
+{
+    if (cityCount == 0)
+    {
+        printf("No cities to rename.\n");
+        return;
+    }
+
+    listCities(cities, cityCount);
+
+    int index;
+    printf("Enter the number of the city to rename: ");
+    scanf("%d", &index);
+    getchar();
+
+    if (index < 1 || index > cityCount)
+    {
+        printf("Invalid city number.\n");
+        return;
+    }
+
+    printf("Enter the new name for city '%s': ", cities[index - 1]);
+    fgets(cities[index - 1], NAME_LENGTH, stdin);
+    cities[index - 1][strcspn(cities[index - 1], "\n")] = '\0';
+
+    printf("City renamed successfully!\n");
 }
