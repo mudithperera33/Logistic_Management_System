@@ -101,7 +101,7 @@ void cityMenu(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount)
             printf("Invalid..Please Try again.\n");
         }
     }
-    while (choice != 0);
+    while (choice != 5);
 }
 
 void addCity(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount)
@@ -219,15 +219,14 @@ void distanceMenu(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char citi
         case 2:
             viewDistances(distance, cityCount, cities);
             break;
-        case 0:
-            printf("Returning to Main Menu...\n");
+        case 3:
             break;
         default:
             printf("Invalid choice! Try again.\n");
         }
 
     }
-    while (choice != 0);
+    while (choice != 3);
 }
 
 void editDistance(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH])
@@ -284,7 +283,7 @@ void viewDistances(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cit
     printf("\n--- Distance Table ---\n    ");
     for (int i = 0; i < cityCount; i++)
     {
-        printf("%s ", cities[i]);
+        printf("%10s ", cities[i]);
     }
     printf("\n");
 
