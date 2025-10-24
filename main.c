@@ -13,6 +13,7 @@ void renameCity(char cities[MAX_CITIES][NAME_LENGTH], int cityCount);
 void distanceMenu(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH]);
 void editDistance(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH]);
 void viewDistances(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH]);
+void vehicleMenu();
 
 
 int main()
@@ -44,7 +45,7 @@ int main()
             distanceMenu(distance, cityCount, cities);
             break;
         case 3:
-            printf("Vehicle Management selected (not added yet)\n");
+            vehicleMenu();
             break;
         case 4:
             printf("Delivery Management selected (not added yet)\n");
@@ -296,4 +297,51 @@ void viewDistances(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cit
         }
         printf("\n");
     }
+}
+void vehicleMenu()
+{
+    int choice;
+    char vehicleNames[3][20] = {"Van", "Truck", "Lorry"};
+    int capacity[3] = {1000, 5000, 10000};
+    int ratePerKm[3] = {30, 40, 80};
+    int avgSpeed[3] = {60, 50, 45};
+    int fuelEfficiency[3] = {12, 6, 4};
+
+    do
+    {
+        printf("\n=== Vehicle Management ===\n");
+        printf("1) View Vehicle Details\n");
+        printf("2) Back to Main Menu\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        getchar();
+
+        if (choice == 1)
+        {
+            printf("\n--- Vehicle Details ---\n");
+            printf("Type\tCapacity(kg)\tRate/km(LKR)\tAvgSpeed(km/h)\tFuelEff(km/l)\n");
+            printf("-------------------------------------------------------------------\n");
+
+            for (int i = 0; i < 3; i++)
+            {
+                printf("%s\t%d\t\t%d\t\t%d\t\t%d\n",
+                       vehicleNames[i],
+                       capacity[i],
+                       ratePerKm[i],
+                       avgSpeed[i],
+                       fuelEfficiency[i]);
+            }
+
+            printf("-------------------------------------------------------------------\n");
+        }
+        else if (choice == 2)
+        {
+            printf("Returning to Main Menu...\n");
+        }
+        else
+        {
+            printf("Invalid choice! Please try again.\n");
+        }
+
+    } while (choice != 2);
 }
