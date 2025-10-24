@@ -10,10 +10,15 @@ void addCity(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount);
 void listCities(char cities[MAX_CITIES][NAME_LENGTH], int cityCount);
 void removeCity(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount);
 void renameCity(char cities[MAX_CITIES][NAME_LENGTH], int cityCount);
+void distanceMenu(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH]);
+void editDistance(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH]);
+void viewDistances(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH]);
+
 
 int main()
 {
     char cities[MAX_CITIES][NAME_LENGTH];
+    int distance[MAX_CITIES][MAX_CITIES] = {0};
     int cityCount = 0;
     int choice;
 
@@ -36,7 +41,7 @@ int main()
             cityMenu(cities, &cityCount);
             break;
         case 2:
-            printf("Distance Management selected (not added yet)\n");
+            distanceMenu(distance, cityCount, cities);
             break;
         case 3:
             printf("Vehicle Management selected (not added yet)\n");
@@ -71,6 +76,7 @@ void cityMenu(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount)
         printf("2) List Cities\n");
         printf("3) Remove City\n");
         printf("4) Rename City\n");
+        printf("5) Back to main menu\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
         getchar();
@@ -188,4 +194,107 @@ void renameCity(char cities[MAX_CITIES][NAME_LENGTH], int cityCount)
     cities[index - 1][strcspn(cities[index - 1], "\n")] = '\0';
 
     printf("City renamed successfully!\n");
+}
+
+
+void distanceMenu(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH])
+{
+    int choice;
+
+    do
+    {
+        printf("\n=== Distance Management ===\n");
+        printf("1) Add / Edit Distance\n");
+        printf("2) View All Distances\n");
+        printf("0) Back to Main Menu\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        getchar();
+
+        switch (choice)
+        {
+        case 1:
+            editDistance(distance, cityCount, cities);
+            break;
+        case 2:
+            viewDistances(distance, cityCount, cities);
+            break;
+        case 0:
+            printf("Returning to Main Menu...\n");
+            break;
+        default:
+            printf("Invalid choice! Try again.\n");
+        }
+
+    }
+    while (choice != 0);
+}
+
+void editDistance(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH])
+{
+    if (cityCount < 2)
+    {
+        printf("Add at least two cities first!\n");
+        return;
+    }
+
+    printf("\n--- Edit Distance Between Cities ---\n");
+    for (int i = 0; i < cityCount; i++)
+    {
+        printf("%d. %s\n", i + 1, cities[i]);
+    }
+
+    int city1, city2, dist;
+
+    printf("Enter number of first city: ");
+    scanf("%d", &city1);
+    printf("Enter number of second city: ");
+    scanf("%d", &city2);
+    printf("Enter distance in km: ");
+    scanf("%d", &dist);
+    getchar();
+
+    if (city1 < 1 || city1 > cityCount || city2 < 1 || city2 > cityCount)
+    {
+        printf("Invalid city number!\n");
+        return;
+    }
+
+    if (city1 == city2)
+    {
+        printf("Distance from a city to itself is 0.\n");
+        distance[city1 - 1][city2 - 1] = 0;
+        return;
+    }
+
+    distance[city1 - 1][city2 - 1] = dist;
+    distance[city2 - 1][city1 - 1] = dist;
+
+    printf("Distance updated successfully!\n");
+}
+
+void viewDistances(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH])
+{
+    if (cityCount < 2)
+    {
+        printf("Add at least two cities first!\n");
+        return;
+    }
+
+    printf("\n--- Distance Table ---\n    ");
+    for (int i = 0; i < cityCount; i++)
+    {
+        printf("%s ", cities[i]);
+    }
+    printf("\n");
+
+    for (int i = 0; i < cityCount; i++)
+    {
+        printf("%s ", cities[i]);
+        for (int j = 0; j < cityCount; j++)
+        {
+            printf("%10d ", distance[i][j]);
+        }
+        printf("\n");
+    }
 }
