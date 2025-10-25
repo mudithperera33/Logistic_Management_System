@@ -390,7 +390,8 @@ void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount)
             printf("Invalid choice! Try again.\n");
         }
 
-    } while (choice != 0);
+    }
+    while (choice != 0);
 }
 void addDelivery(char cities[MAX_CITIES][NAME_LENGTH], int cityCount,
                  char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH],
@@ -471,10 +472,39 @@ void viewDeliveries(char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH]
         return;
     }
 
-    printf("\n--- Delivery List ---\n");
     for (int i = 0; i < deliveryCount; i++)
     {
-        printf("%d) From: %s | To: %s | Vehicle: %s | Weight: %.1fkg\n",
-               i + 1, fromCity[i], toCity[i], vehicleType[i], packageWeight[i]);
+        int distance = 100 + (i * 25);
+
+        int rate, speed, efficiency;
+
+        if (strcmp(vehicleType[i], "Van") == 0)
+        {
+            rate = 30;
+            speed = 60;
+            efficiency = 12;
+        }
+        else if (strcmp(vehicleType[i], "Truck") == 0)
+        {
+            rate = 40;
+            speed = 50;
+            efficiency = 6;
+        }
+        else
+        {
+            rate = 80;
+            speed = 45;
+            efficiency = 4;
+        }
+
+        float cost = rate * distance;
+        float time = (float)distance / speed;
+        float fuelUsed = (float)distance / efficiency;
+
+        printf("\nDelivery %d:\n", i + 1);
+        printf("From: %s\nTo: %s\nVehicle: %s\nWeight: %.1f kg\n",
+               fromCity[i], toCity[i], vehicleType[i], packageWeight[i]);
+        printf("Distance: %d km | Cost: Rs. %.2f | Time: %.2f hrs | Fuel Used: %.2f L\n",
+               distance, cost, time, fuelUsed);
     }
 }
