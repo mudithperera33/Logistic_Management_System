@@ -14,7 +14,10 @@ void distanceMenu(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char citi
 void editDistance(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH]);
 void viewDistances(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH]);
 void vehicleMenu();
-void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount, int distance[MAX_CITIES][MAX_CITIES]);
+void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount,
+                  int distance[MAX_CITIES][MAX_CITIES],
+                  char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH],
+                  char vehicleType[30][20], float packageWeight[30], int *deliveryCount);
 void addDelivery(char cities[MAX_CITIES][NAME_LENGTH], int cityCount,
                  char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH],
                  char vehicleType[30][20], float packageWeight[30], int *deliveryCount);
@@ -30,6 +33,12 @@ int main()
     int distance[MAX_CITIES][MAX_CITIES] = {0};
     int cityCount = 0;
     int choice;
+    char fromCity[30][NAME_LENGTH];
+    char toCity[30][NAME_LENGTH];
+    char vehicleType[30][20];
+    float packageWeight[30];
+    int deliveryCount = 0;
+
 
     do
     {
@@ -56,10 +65,10 @@ int main()
             vehicleMenu();
             break;
         case 4:
-            deliveryMenu(cities, cityCount, distance);
+            deliveryMenu(cities, cityCount, distance, fromCity, toCity, vehicleType, packageWeight, &deliveryCount);
             break;
         case 5:
-            printf("Reports will be shown through Delivery Menu.\n");
+            reportsMenu(fromCity, toCity, vehicleType, packageWeight, deliveryCount, cities, distance, cityCount);
             break;
         case 6:
             printf("Exiting...\n");
@@ -351,15 +360,12 @@ void vehicleMenu()
     while (choice != 2);
 }
 
-void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount, int distance[MAX_CITIES][MAX_CITIES])
+void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount,
+                  int distance[MAX_CITIES][MAX_CITIES],
+                  char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH],
+                  char vehicleType[30][20], float packageWeight[30], int *deliveryCount)
 {
     int choice;
-    char fromCity[30][NAME_LENGTH];
-    char toCity[30][NAME_LENGTH];
-    char vehicleType[30][20];
-    float packageWeight[30];
-    int deliveryCount = 0;
-
     do
     {
         printf("\n=== Delivery Management ===\n");
@@ -374,15 +380,15 @@ void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount, int dista
         switch (choice)
         {
         case 1:
-            addDelivery(cities, cityCount, fromCity, toCity, vehicleType, packageWeight, &deliveryCount);
+            addDelivery(cities, cityCount, fromCity, toCity, vehicleType, packageWeight, deliveryCount);
             break;
 
         case 2:
-            viewDeliveries(fromCity, toCity, vehicleType, packageWeight, deliveryCount);
+            viewDeliveries(fromCity, toCity, vehicleType, packageWeight, *deliveryCount);
             break;
 
         case 3:
-            reportsMenu(fromCity, toCity, vehicleType, packageWeight, deliveryCount, cities, distance, cityCount);
+            reportsMenu(fromCity, toCity, vehicleType, packageWeight, *deliveryCount, cities, distance, cityCount);
             break;
 
         case 4:
@@ -392,6 +398,7 @@ void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount, int dista
         default:
             printf("Invalid choice! Try again.\n");
         }
+
 
     }
     while (choice != 4);
