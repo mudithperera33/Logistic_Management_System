@@ -28,6 +28,8 @@ void reportsMenu(char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH],
                  char cities[MAX_CITIES][NAME_LENGTH], int distance[MAX_CITIES][MAX_CITIES], int cityCount);
 void loadCities(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount);
 void saveCities(char cities[MAX_CITIES][NAME_LENGTH], int cityCount);
+void loadDistances(int distance[MAX_CITIES][MAX_CITIES], int cityCount);
+void saveDistances(int distance[MAX_CITIES][MAX_CITIES], int cityCount);
 
 
 int main()
@@ -43,6 +45,7 @@ int main()
     float packageWeight[30];
     int deliveryCount = 0;
     loadCities(cities, &cityCount);
+    loadDistances(distance, cityCount);
 
     do
     {
@@ -76,6 +79,7 @@ int main()
             break;
         case 6:
             saveCities(cities, cityCount);
+            saveDistances(distance, cityCount);
             printf("Exiting...\n");
             break;
         default:
@@ -625,4 +629,46 @@ void saveCities(char cities[MAX_CITIES][NAME_LENGTH], int cityCount)
 
     fclose(file);
     printf("City data saved successfully!\n");
+}
+void loadDistances(int distance[MAX_CITIES][MAX_CITIES], int cityCount)
+{
+    FILE *file = fopen("distance.txt", "r");
+    if (file == NULL)
+    {
+        printf("No saved distance data found. Starting fresh.\n");
+        return;
+    }
+
+    for (int i = 0; i < cityCount; i++)
+    {
+        for (int j = 0; j < cityCount; j++)
+        {
+            fscanf(file, "%d", &distance[i][j]);
+        }
+    }
+
+    fclose(file);
+    printf("Loaded distance data for %d cities.\n", cityCount);
+}
+
+void saveDistances(int distance[MAX_CITIES][MAX_CITIES], int cityCount)
+{
+    FILE *file = fopen("distance.txt", "w");
+    if (file == NULL)
+    {
+        printf("Error saving distance data!\n");
+        return;
+    }
+
+    for (int i = 0; i < cityCount; i++)
+    {
+        for (int j = 0; j < cityCount; j++)
+        {
+            fprintf(file, "%d ", distance[i][j]);
+        }
+        fprintf(file, "\n");
+    }
+
+    fclose(file);
+    printf("Distance data saved successfully!\n");
 }
