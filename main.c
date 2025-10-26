@@ -14,13 +14,15 @@ void distanceMenu(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char citi
 void editDistance(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH]);
 void viewDistances(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH]);
 void vehicleMenu();
-void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount);
+void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount, int distance[MAX_CITIES][MAX_CITIES]);
 void addDelivery(char cities[MAX_CITIES][NAME_LENGTH], int cityCount,
                  char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH],
                  char vehicleType[30][20], float packageWeight[30], int *deliveryCount);
 void viewDeliveries(char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH],
                     char vehicleType[30][20], float packageWeight[30], int deliveryCount);
-
+void reportsMenu(char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH],
+                 char vehicleType[30][20], float packageWeight[30], int deliveryCount,
+                 char cities[MAX_CITIES][NAME_LENGTH], int distance[MAX_CITIES][MAX_CITIES], int cityCount);
 
 int main()
 {
@@ -54,10 +56,10 @@ int main()
             vehicleMenu();
             break;
         case 4:
-            deliveryMenu(cities, cityCount);
+            deliveryMenu(cities, cityCount, distance);
             break;
         case 5:
-            printf("Reports selected (not added yet)\n");
+            printf("Reports will be shown through Delivery Menu.\n");
             break;
         case 6:
             printf("Exiting...\n");
@@ -70,7 +72,6 @@ int main()
 
     return 0;
 }
-
 
 void cityMenu(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount)
 {
@@ -94,13 +95,13 @@ void cityMenu(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount)
             addCity(cities, cityCount);
             break;
         case 2:
-            listCities(cities,*cityCount);
+            listCities(cities, *cityCount);
             break;
         case 3:
-            removeCity(cities,cityCount);
+            removeCity(cities, cityCount);
             break;
         case 4:
-            renameCity(cities,*cityCount);
+            renameCity(cities, *cityCount);
             break;
         case 5:
             break;
@@ -121,7 +122,6 @@ void addCity(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount)
 
     printf("Enter city name: ");
     fgets(cities[*cityCount], NAME_LENGTH, stdin);
-
     cities[*cityCount][strcspn(cities[*cityCount], "\n")] = '\0';
 
     printf("City added successfully!\n");
@@ -143,6 +143,7 @@ void listCities(char cities[MAX_CITIES][NAME_LENGTH], int cityCount)
         printf("%d. %s\n", i + 1, cities[i]);
     }
 }
+
 void removeCity(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount)
 {
     if (*cityCount == 0)
@@ -172,7 +173,6 @@ void removeCity(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount)
     (*cityCount)--;
 
     printf("City removed successfully!\n");
-
 }
 
 void renameCity(char cities[MAX_CITIES][NAME_LENGTH], int cityCount)
@@ -203,7 +203,6 @@ void renameCity(char cities[MAX_CITIES][NAME_LENGTH], int cityCount)
     printf("City renamed successfully!\n");
 }
 
-
 void distanceMenu(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH])
 {
     int choice;
@@ -226,14 +225,13 @@ void distanceMenu(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char citi
         case 2:
             viewDistances(distance, cityCount, cities);
             break;
-        case 3:
+        case 0:
             break;
         default:
             printf("Invalid choice! Try again.\n");
         }
-
     }
-    while (choice != 3);
+    while (choice != 0);
 }
 
 void editDistance(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cities[MAX_CITIES][NAME_LENGTH])
@@ -296,7 +294,7 @@ void viewDistances(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cit
 
     for (int i = 0; i < cityCount; i++)
     {
-        printf("%s ", cities[i]);
+        printf("%10s ", cities[i]);
         for (int j = 0; j < cityCount; j++)
         {
             printf("%10d ", distance[i][j]);
@@ -304,6 +302,7 @@ void viewDistances(int distance[MAX_CITIES][MAX_CITIES], int cityCount, char cit
         printf("\n");
     }
 }
+
 void vehicleMenu()
 {
     int choice;
@@ -348,12 +347,11 @@ void vehicleMenu()
         {
             printf("Invalid choice! Please try again.\n");
         }
-
     }
     while (choice != 2);
 }
 
-void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount)
+void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount, int distance[MAX_CITIES][MAX_CITIES])
 {
     int choice;
     char fromCity[30][NAME_LENGTH];
@@ -367,7 +365,8 @@ void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount)
         printf("\n=== Delivery Management ===\n");
         printf("1) Add Delivery\n");
         printf("2) View Deliveries\n");
-        printf("0) Back to Main Menu\n");
+        printf("3) View Reports\n");
+        printf("4) Back to Main Menu\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
         getchar();
@@ -382,7 +381,11 @@ void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount)
             viewDeliveries(fromCity, toCity, vehicleType, packageWeight, deliveryCount);
             break;
 
-        case 0:
+        case 3:
+            reportsMenu(fromCity, toCity, vehicleType, packageWeight, deliveryCount, cities, distance, cityCount);
+            break;
+
+        case 4:
             printf("Returning to Main Menu...\n");
             break;
 
@@ -391,8 +394,9 @@ void deliveryMenu(char cities[MAX_CITIES][NAME_LENGTH], int cityCount)
         }
 
     }
-    while (choice != 0);
+    while (choice != 4);
 }
+
 void addDelivery(char cities[MAX_CITIES][NAME_LENGTH], int cityCount,
                  char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH],
                  char vehicleType[30][20], float packageWeight[30], int *deliveryCount)
@@ -403,7 +407,7 @@ void addDelivery(char cities[MAX_CITIES][NAME_LENGTH], int cityCount,
         return;
     }
 
-    if (*deliveryCount > 30)
+    if (*deliveryCount >= 30)
     {
         printf("Cannot add more deliveries. Limit reached.\n");
         return;
@@ -412,7 +416,7 @@ void addDelivery(char cities[MAX_CITIES][NAME_LENGTH], int cityCount,
     printf("\n--- Add New Delivery ---\n");
 
     printf("Available cities:\n");
-    for (int i = 0; i <= cityCount; i++)
+    for (int i = 0; i < cityCount; i++)
     {
         printf("%d) %s\n", i + 1, cities[i]);
     }
@@ -461,8 +465,9 @@ void addDelivery(char cities[MAX_CITIES][NAME_LENGTH], int cityCount,
     strcpy(toCity[*deliveryCount], cities[to - 1]);
 
     printf("Delivery added successfully!\n");
-    *deliveryCount = *deliveryCount + 1;
+    (*deliveryCount)++;
 }
+
 void viewDeliveries(char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH],
                     char vehicleType[30][20], float packageWeight[30], int deliveryCount)
 {
@@ -475,7 +480,6 @@ void viewDeliveries(char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH]
     for (int i = 0; i < deliveryCount; i++)
     {
         int distance = 100 + (i * 25);
-
         int rate, speed, efficiency;
 
         if (strcmp(vehicleType[i], "Van") == 0)
@@ -507,4 +511,66 @@ void viewDeliveries(char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH]
         printf("Distance: %d km | Cost: Rs. %.2f | Time: %.2f hrs | Fuel Used: %.2f L\n",
                distance, cost, time, fuelUsed);
     }
+}
+
+void reportsMenu(char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH],
+                 char vehicleType[30][20], float packageWeight[30], int deliveryCount,
+                 char cities[MAX_CITIES][NAME_LENGTH], int distance[MAX_CITIES][MAX_CITIES], int cityCount)
+{
+    if (deliveryCount == 0)
+    {
+        printf("No deliveries available to report.\n");
+        return;
+    }
+
+    float totalCost = 0;
+    int totalDeliveries = deliveryCount;
+
+    for (int i = 0; i < deliveryCount; i++)
+    {
+        int fromIndex = -1, toIndex = -1;
+        for (int j = 0; j < cityCount; j++)
+        {
+            if (strcmp(fromCity[i], cities[j]) == 0) fromIndex = j;
+            if (strcmp(toCity[i], cities[j]) == 0) toIndex = j;
+        }
+
+        if (fromIndex == -1 || toIndex == -1)
+        {
+            printf("Error: City not found for delivery %d\n", i + 1);
+            continue;
+        }
+
+        int dist = distance[fromIndex][toIndex];
+        int rate, speed, efficiency;
+
+        if (strcmp(vehicleType[i], "Van") == 0)
+        {
+            rate = 30;
+            speed = 60;
+            efficiency = 12;
+        }
+        else if (strcmp(vehicleType[i], "Truck") == 0)
+        {
+            rate = 40;
+            speed = 50;
+            efficiency = 6;
+        }
+        else
+        {
+            rate = 80;
+            speed = 45;
+            efficiency = 4;
+        }
+
+        float cost = rate * dist;
+        totalCost += cost;
+    }
+
+    float avgCost = totalCost / totalDeliveries;
+
+    printf("\n=== Reports Summary ===\n");
+    printf("Total Deliveries: %d\n", totalDeliveries);
+    printf("Total Cost of All Deliveries: Rs. %.2f\n", totalCost);
+    printf("Average Cost per Delivery: Rs. %.2f\n", avgCost);
 }
