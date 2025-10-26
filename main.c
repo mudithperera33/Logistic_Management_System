@@ -26,9 +26,13 @@ void viewDeliveries(char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH]
 void reportsMenu(char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH],
                  char vehicleType[30][20], float packageWeight[30], int deliveryCount,
                  char cities[MAX_CITIES][NAME_LENGTH], int distance[MAX_CITIES][MAX_CITIES], int cityCount);
+void loadCities(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount);
+void saveCities(char cities[MAX_CITIES][NAME_LENGTH], int cityCount);
+
 
 int main()
 {
+
     char cities[MAX_CITIES][NAME_LENGTH];
     int distance[MAX_CITIES][MAX_CITIES] = {0};
     int cityCount = 0;
@@ -38,7 +42,7 @@ int main()
     char vehicleType[30][20];
     float packageWeight[30];
     int deliveryCount = 0;
-
+    loadCities(cities, &cityCount);
 
     do
     {
@@ -71,6 +75,7 @@ int main()
             reportsMenu(fromCity, toCity, vehicleType, packageWeight, deliveryCount, cities, distance, cityCount);
             break;
         case 6:
+            saveCities(cities, cityCount);
             printf("Exiting...\n");
             break;
         default:
@@ -580,4 +585,44 @@ void reportsMenu(char fromCity[30][NAME_LENGTH], char toCity[30][NAME_LENGTH],
     printf("Total Deliveries: %d\n", totalDeliveries);
     printf("Total Cost of All Deliveries: Rs. %.2f\n", totalCost);
     printf("Average Cost per Delivery: Rs. %.2f\n", avgCost);
+}
+void loadCities(char cities[MAX_CITIES][NAME_LENGTH], int *cityCount)
+{
+    FILE *file = fopen("cities.txt", "r");
+    if (file == NULL)
+    {
+        printf("No saved city data found. Starting fresh.\n");
+        return;
+    }
+
+    *cityCount = 0;
+    while (fgets(cities[*cityCount], NAME_LENGTH, file) != NULL)
+    {
+        cities[*cityCount][strcspn(cities[*cityCount], "\n")] = '\0';
+        (*cityCount)++;
+
+        if (*cityCount >= MAX_CITIES)
+            break;
+    }
+
+    fclose(file);
+    printf("Loaded %d cities from file.\n", *cityCount);
+}
+
+void saveCities(char cities[MAX_CITIES][NAME_LENGTH], int cityCount)
+{
+    FILE *file = fopen("cities.txt", "w");
+    if (file == NULL)
+    {
+        printf("Error saving city data!\n");
+        return;
+    }
+
+    for (int i = 0; i < cityCount; i++)
+    {
+        fprintf(file, "%s\n", cities[i]);
+    }
+
+    fclose(file);
+    printf("City data saved successfully!\n");
 }
